@@ -7,12 +7,12 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "webbuild": "nodemon -e ts,less,tsx --watch ./ --exec webpack",
     "start": "electron . --inspect=9229",
-    "pack": "electron-packager . SSP --win --out ./build --arch=x64 --app-version=0.0.1 --electron-version=7.2.4 --icon=app.ico --overwrite"
+    "pack": "electron-packager . SSP --win --out ./build --arch=x64 --app-version=0.0.1 --electron-version=8.1.1 --icon=app.ico --overwrite"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "electron": "^7.2.4",
+    "electron": "8.1.1",
     "nodemon": "^2.0.6",
     "source-map-loader": "^0.2.4",
     "ts-loader": "^6.0.4",
