@@ -2,6 +2,7 @@ import * as React from 'react';
 import { ipcRenderer, desktopCapturer,clipboard, nativeImage, remote } from 'electron';
 import { ScreenEditor } from './ScreenEditor';
 import { getCurrentScreen } from './util';
+import { CheckOutlined, CloseOutlined, RedoOutlined, CopyOutlined } from '@ant-design/icons';
 
 const qs = require('querystring');
 
@@ -15,20 +16,25 @@ export const ScreenRender = ()=>{
     const btnCloseRef = useRef(null);
     const btnResetRef = useRef(null);
     const btnOkRef = useRef(null);
+    const btnCopyRef = useRef(null);
 
     const search = qs.parse(location.search.split('?').pop());
     const thumbSize = {
         width: parseInt(search.width) * window.devicePixelRatio,
         height: parseInt(search.height) * window.devicePixelRatio
     };
+
     useEffect(()=>{
         desktopCapturer.getSources({ types: ['screen'], thumbnailSize: thumbSize}).then(sources => {
             sources.forEach(source => {
                 if (source.display_id.toString() === search.display_id.toString()) {
                     try {
                         const dataUrl = source.thumbnail.toDataURL();
-                        showImg(dataUrl);
-                        ipcRenderer.send('show-screen', source.display_id);
+                        showImg(dataUrl, ()=>{
+                            setTimeout(()=>{
+                                ipcRenderer.send('show-screen', source.display_id);
+                            }, 10);
+                        });
                     } catch (e) {
                         console.log(e);
                     }
@@ -38,15 +44,16 @@ export const ScreenRender = ()=>{
     }, []);
 
     
-    function showImg(dataUrl: string){
+    function showImg(dataUrl: string, callback: Function){
 
 
-        let capture = new ScreenEditor(canvasRef.current, bgRef.current, dataUrl)
+        let capture = new ScreenEditor(canvasRef.current, bgRef.current, dataUrl, callback)
         let $toolbar = toolbarRef.current;
         let $sizeInfo = sizeInfoRef.current;
         let $btnClose = btnCloseRef.current;
         let $btnReset = btnResetRef.current;
         let $btnOk = btnOkRef.current;
+        let $btnCopy = btnCopyRef.current;
 
         let onDrag = (selectRect: any) => {
             $toolbar.style.display = 'none'
@@ -99,19 +106,28 @@ export const ScreenRender = ()=>{
             capture.reset()
         })
 
-        let selectCapture = () => {
+        let copytoClip=()=>{
             if (!capture.selectRect) {
                 return
             }
             let url = capture.getImageUrl()
             remote.getCurrentWindow().hide();
             clipboard.writeImage(nativeImage.createFromDataURL(url))
+            return url;
+        }
+
+        let selectCapture = () => {
+            if (!capture.selectRect) {
+                return
+            }
+            let url = copytoClip()
             ipcRenderer.send('capture-screen-finish', {
                 url,
                 rect: capture.selectRect
             });
         }
-        $btnOk.addEventListener('click', selectCapture)
+        $btnOk.addEventListener('click', selectCapture);
+        $btnCopy.addEventListener('click', copytoClip);
 
         window.addEventListener('keypress', (e) => {
             if (e.code === 'Enter') {
@@ -133,9 +149,10 @@ export const ScreenRender = ()=>{
             <canvas ref={canvasRef} className="image-canvas"></canvas>
             <div ref={sizeInfoRef} className="size-info"></div>
             <div ref={toolbarRef} className="toolbar">
-                <div className="iconfont icon-zhongzhi" ref={btnResetRef}></div>
-                <div className="iconfont icon-guanbi" ref={btnCloseRef}></div>
-                <div className="iconfont icon-duihao" ref={btnOkRef}></div>
+                <RedoOutlined title="重做" ref={btnResetRef} className="iconfont"/>
+                <CloseOutlined title="取消" ref={btnCloseRef} className="iconfont" />
+                <CopyOutlined title="复制到剪切板" ref={btnCopyRef} className="iconfont"/>
+                <CheckOutlined title="悬浮图片" ref={btnOkRef} className="iconfont" />
             </div>
         </React.Fragment>
     );

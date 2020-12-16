@@ -35,7 +35,7 @@ export class ScreenEditor extends Event {
     action: number;
     startDragRect: any;
     anchors: any;
-    constructor($canvas: HTMLCanvasElement, $bg: HTMLElement, imageSrc: string) {
+    constructor($canvas: HTMLCanvasElement, $bg: HTMLElement, imageSrc: string, callback: Function) {
         super()
         this.$canvas = $canvas
         this.imageSrc = imageSrc
@@ -52,7 +52,7 @@ export class ScreenEditor extends Event {
         this.onMouseUp = this.onMouseUp.bind(this)
 
         this.init().then(() => {
-            // console.log('init')
+            callback && callback();
         })
     }
 

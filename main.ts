@@ -1,22 +1,20 @@
-import { app, BrowserWindow, Menu, MenuItem, dialog,Tray,globalShortcut  } from 'electron';
-import { bindScreen } from './src/main/components/Main';
-const path = require('path');
+import { app, BrowserWindow, Menu, Tray } from 'electron';
+import { bindScreen, closeAll } from './src/main/components/Main';
 
 let mainWindow: BrowserWindow = null;
 let tray: Tray = null;
 let createWindow = function() {
+    Menu.setApplicationMenu(null)
     mainWindow = new BrowserWindow({
       width:800, 
       height:600, 
       skipTaskbar: true,
       show: false,
       webPreferences: {
-        // nodeIntegration: true
+        nodeIntegration: true
       }
-      // fullscreenable:false,
-      // maximizable:false
     })
-    mainWindow.webContents.openDevTools()
+    // mainWindow.webContents.openDevTools()
     mainWindow.hide(); 
     mainWindow.loadFile('index.html')
 
@@ -26,19 +24,16 @@ let createWindow = function() {
         event.preventDefault();
     });
 
-    mainWindow.on('show', () => {
-        // tray.setHighlightMode('always')
-    })
-    mainWindow.on('hide', () => {
-        // tray.setHighlightMode('never')
-    })
     tray = new Tray('./app.ico');
     const contextMenu = Menu.buildFromTemplate([
-        {label: '退出', click: () => {mainWindow.destroy()}},//我们需要在这里有一个真正的退出（这里直接强制退出）
+        {label: '退出', click: () => {
+            closeAll();
+            mainWindow.destroy();
+        }},
     ])
-    tray.setToolTip('My托盘测试')
+    tray.setToolTip('SS截图助手')
     tray.setContextMenu(contextMenu)
-    tray.on('click', ()=>{ //我们这里模拟桌面程序点击通知区图标实现打开关闭应用的功能
+    tray.on('click', ()=>{ 
         mainWindow.isVisible() ? mainWindow.hide() : mainWindow.show()
         mainWindow.isVisible() ? mainWindow.setSkipTaskbar(false):mainWindow.setSkipTaskbar(true);
     })
@@ -58,3 +53,5 @@ app.on('activate', ()=>{
         createWindow()
     }
 })
+// 禁止窗口弹出动画
+app.commandLine.appendSwitch('wm-window-animations-disabled');

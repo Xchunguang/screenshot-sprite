@@ -1,0 +1,24 @@
+@import '~antd/dist/antd.css';
+
+.sizeIcon{
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    // opacity: 0;
+    -webkit-app-region: no-drag;
+}
+.imgContainer {
+    width: 100%;
+    height: 100%;
+    .img{
+        user-select: none;
+        width: 100%;
+        height: 100%;
+    }
+    &:hover {
+        box-shadow: 1px;
+        .sizeIcon {
+            opacity: 1;
+        }
+    }
+}
