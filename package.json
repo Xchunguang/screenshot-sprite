@@ -1,12 +1,13 @@
 {
-  "name": "du-price",
+  "name": "screenshot-sprite",
   "version": "1.0.0",
   "description": "",
   "main": "./dist/main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "webbuild": "nodemon -e ts,less,tsx --watch ./ --exec webpack",
-    "start": "electron . --inspect=9229"
+    "start": "electron . --inspect=9229",
+    "pack": "electron-packager . SSP --win --out ./build --arch=x64 --app-version=0.0.1 --electron-version=7.2.4 --icon=app.ico --overwrite"
   },
   "author": "",
   "license": "ISC",
@@ -17,7 +18,9 @@
     "ts-loader": "^6.0.4",
     "typescript": "^3.8.4",
     "webpack": "^4.36.1",
-    "webpack-cli": "^4.2.0"
+    "webpack-cli": "^4.2.0",
+    "electron-packager": "^14.2.1",
+    "asar": "^3.0.0"
   },
   "dependencies": {
     "@ant-design/charts": "^1.0.9",
