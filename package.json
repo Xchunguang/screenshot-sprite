@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "webbuild": "nodemon -e ts,less,tsx --watch ./ --exec webpack",
-    "start": "electron . --inspect=9229",
+    "start": "electron .",
     "pack": "electron-packager . SSP --win --out ./build --arch=x64 --app-version=0.0.1 --electron-version=8.1.1 --icon=app.ico --overwrite"
   },
   "author": "",

@@ -65,6 +65,7 @@ ipcMain.on('capture-close', (e1)=>{
     e1.returnValue = '';
     captureWins.forEach(e => e.close());
     captureWins.splice(0, captureWins.length);
+    globalShortcut.unregister('Esc');
 });
 
 ipcMain.on('resize-img', (e,{index, width, height})=>{

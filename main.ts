@@ -29,6 +29,7 @@ let createWindow = function() {
         {label: '退出', click: () => {
             closeAll();
             mainWindow.destroy();
+            app.exit();
         }},
     ])
     tray.setToolTip('SS截图助手')
