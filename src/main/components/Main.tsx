@@ -38,6 +38,11 @@ ipcMain.on('show-screen', (e, display_id: string = '') => {
             captureStatus = true;
         }
     });
+    globalShortcut.register('Esc', () => {
+        if(captureWins.length >0 && captureStatus){
+            closeCaptureWin();
+        }
+    });
 });
 
 ipcMain.on('show-all-screen', () => {
@@ -102,12 +107,13 @@ ipcMain.on('show-img', (e,{index})=>{
 });
 
 
-const closeCaptureWin = (win: BrowserWindow) => {
+const closeCaptureWin = () => {
     if (captureWins) {
         captureWins.forEach(win => win.close && win.close());
         captureWins.splice(0, captureWins.length);
         captureStatus = false;
     }
+    globalShortcut.unregister('Esc');
 };
 
 function createImgWindow(dataUrl: string, rect: any){
@@ -162,11 +168,6 @@ export const closeAll = () => {
 }
 
 export const bindScreen=(win: BrowserWindow, appPath: string)=>{
-    globalShortcut.register('Esc', () => {
-        if(captureWins.length >0 && captureStatus){
-            closeCaptureWin(win);
-        }
-    });
     globalShortcut.register('Alt+Q', () => {
         captureScreen(path.join(appPath, 'screen.html'));
     })
