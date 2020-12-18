@@ -57,6 +57,7 @@ ipcMain.on('capture-screen-finish', (e1, {url, rect})=>{
     captureWins.forEach(e => e.close());
     captureWins.splice(0, captureWins.length);
     createImgWindow(url, rect);
+    globalShortcut.unregister('Esc');
 });
 
 // 取消

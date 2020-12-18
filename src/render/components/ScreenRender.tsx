@@ -127,7 +127,10 @@ export const ScreenRender = ()=>{
             });
         }
         $btnOk.addEventListener('click', selectCapture);
-        $btnCopy.addEventListener('click', copytoClip);
+        $btnCopy.addEventListener('click', ()=>{
+            copytoClip();
+            ipcRenderer.send('capture-close');
+        });
 
         window.addEventListener('keypress', (e) => {
             if (e.code === 'Enter') {
